@@ -2,7 +2,7 @@
   import type { GraphData } from "../dataMassager";
   import XAxis from "./XAxis.svelte";
   import YAxis from "./YAxis.svelte";
-  import Series from "./Series.svelte";
+  import Series from "./SeriesColumns.svelte";
   import { scaleLinear } from "d3-scale";
   export let activeYear = 2023;
 
@@ -30,8 +30,8 @@
   .graph {
     width: 100%;
     height: 100%;
-    background-color: #00227a;
-    color: white;
+    background-color: var(--chart-bg);
+    color: var(--chart-fg);
     position: relative;
   }
 </style>

@@ -22,6 +22,11 @@
     seasons = seasons;
   }
   let activeSeason = seasons[seasons.length - 1];
+
+  function getYearLabel(year) {
+    const twoDigit = year - 2000;
+    return `'${twoDigit}-'${twoDigit + 1}`;
+  }
 </script>
 
 <Page --bar-height="32px">
@@ -42,14 +47,16 @@
         <ul>
           {#each seasons as season}
             <li>
-              <a on:click={() => (activeSeason = season)} href="#">{season}</a>
+              <a on:click={() => (activeSeason = season)} href="#"
+                >{getYearLabel(season)}</a
+              >
             </li>
           {/each}
         </ul>
       </div>
       <div class="full-height" slot="right">
         <Bar>
-          <h2>Events</h2>
+          <h2>Dip Data</h2>
         </Bar>
         <div class="chart-container">
           <Chart data={graphData} activeYear={activeSeason}></Chart>
@@ -65,10 +72,23 @@
     flex-direction: column;
     height: 100%;
   }
+  :root {
+    --chart-bg: #00227a;
+    --chart-fg: white;
+  }
   .chart-container {
     width: 100%;
     height: 100%; /* calc(100vh - 5 * var(--bar-height, 32px));*/
     box-sizing: border-box;
-    border: 2px solid pink;
+    padding: 3em;
+    background-color: var(--chart-bg);
+    color: var(--chart-fg);
+  }
+  ul {
+    padding: 0;
+    margin: 0;
+  }
+  li {
+    list-style: none;
   }
 </style>

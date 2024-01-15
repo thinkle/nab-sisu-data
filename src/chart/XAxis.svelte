@@ -56,7 +56,7 @@
   .x-axis-label,
   .x-axis-line {
     position: absolute;
-    bottom: 0;
+    bottom: -2em;
     left: var(--x);
   }
 

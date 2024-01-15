@@ -42,7 +42,7 @@
   .y-axis-label,
   .y-axis-line {
     position: absolute;
-    left: 0;
+    left: -2em;
   }
 
   .y-axis-label {
