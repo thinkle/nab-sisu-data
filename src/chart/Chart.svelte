@@ -30,6 +30,8 @@
   .graph {
     width: 100%;
     height: 100%;
-    background-color: pink;
+    background-color: #00227a;
+    color: white;
+    position: relative;
   }
 </style>

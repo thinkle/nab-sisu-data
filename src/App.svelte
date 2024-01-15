@@ -11,6 +11,17 @@
   let graphData = getGraphData(fakeData);
   let data = graphData.map((v) => ({ x: v.dayOfSeason, y: v.airTempF }));
   console.log("Got me data", graphData, data);
+  let seasons = [];
+  $: {
+    for (let d of graphData) {
+      if (!seasons.includes(d.season)) {
+        seasons.push(d.season);
+      }
+    }
+    seasons.sort();
+    seasons = seasons;
+  }
+  let activeSeason = seasons[seasons.length - 1];
 </script>
 
 <Page --bar-height="32px">
@@ -28,13 +39,20 @@
         <Bar>
           <h2>Years</h2>
         </Bar>
+        <ul>
+          {#each seasons as season}
+            <li>
+              <a on:click={() => (activeSeason = season)} href="#">{season}</a>
+            </li>
+          {/each}
+        </ul>
       </div>
       <div class="full-height" slot="right">
         <Bar>
           <h2>Events</h2>
         </Bar>
         <div class="chart-container">
-          <Chart data={graphData}></Chart>
+          <Chart data={graphData} activeYear={activeSeason}></Chart>
         </div>
       </div>
     </SplitPane>
