@@ -4,6 +4,7 @@
   export let xScale: typeof scaleLinear;
   export let yScale: typeof scaleLinear;
   export let activeYear: number;
+  export let hiddenYears: number[] = [];
   import type { GraphData } from "../dataMassager";
   export let data: GraphData[];
   let activeItems: GraphData[] = [];
@@ -13,7 +14,7 @@
       seasons.push(d.season);
     }
   }
-  let activeNumber = -1;
+
   $: activeNumber = seasons.indexOf(activeYear);
 
   function toggleItem(datum: GraphData) {
@@ -27,7 +28,13 @@
 
 {#each data as datum}
   <div
-    class="data-set"
+    class="day-data"
+    class:hidden-season={hiddenYears.includes(datum.season)}
+    data-date={datum.absoluteDate.toLocaleDateString()}
+    data-day-of-season={datum.dayOfSeason}
+    data-air-temp={datum.airTempF}
+    data-water-temp={datum.lakeTempF}
+    class:active-season={datum.season === activeYear}
     on:click={() => toggleItem(datum)}
     class:active={activeItems.includes(datum)}
     class:water-above-air={datum.lakeTempF > datum.airTempF}
@@ -73,20 +80,21 @@
     transform: translateX(-50%);
     position: absolute;
     text-align: center;
+    background-color: var(--chart-bg);
   }
   .data-point {
     position: absolute;
     top: var(--y);
     left: var(--x);
-    width: 0.5vw;
+    width: calc(max(0.5vw, 10px));
     height: calc(100% - var(--y));
     box-sizing: border-box;
   }
   .air-temp {
-    background-color: #cecece;
+    background-color: var(--air-color);
   }
   .water-temp {
-    background-color: aquamarine;
+    background-color: var(--water-color);
   }
   .water-temp.ice {
     border-top: 4px solid #fcffff;
@@ -94,42 +102,39 @@
   .label {
     display: none;
   }
-  .data-set:hover .label,
-  .data-set.active .label {
+  .active-season.day-data:hover .label,
+  .day-data.active .label {
     display: block;
   }
   .season1 {
-    filter: hue-rotate(15deg);
+    filter: var(--season-1-filter);
   }
   .season2 {
-    filter: hue-rotate(30deg);
+    filter: var(--season-2-filter);
   }
   .season3 {
-    filter: hue-rotate(45deg);
+    filter: var(--season-3-filter);
   }
   .season4 {
-    filter: hue-rotate(60deg);
+    filter: var(--season-4-filter);
   }
   .season5 {
-    filter: hue-rotate(75deg);
+    filter: var(--season-5-filter);
   }
   .season6 {
-    filter: saturate(0.8);
+    filter: var(--season-6-filter);
   }
   .season7 {
-    filter: saturate(0.5);
+    filter: var(--season-7-filter);
   }
   .season8 {
-    filter: saturate(0.2);
+    filter: var(--season-8-filter);
   }
   .season9 {
-    filter: saturate(0);
-  }
-  .active-season {
+    filter: var(--season-9-filter);
   }
 
   .active .data-point {
-    border: 1px solid black;
   }
 
   .water-above-air .air-temp {
@@ -138,24 +143,31 @@
   .water-above-air .water-temp {
     z-index: 0;
   }
-  .data-set {
+  .day-data {
     z-index: 0;
   }
-  .data-set.active-season {
+  .day-data.active-season {
     z-index: 1;
   }
-  .data-set:hover,
-  .data-set:active {
+  .active-season.day-data:hover,
+  .day-data:active {
     z-index: 3;
+    border-left: 1px solid white;
+    border-right: 1px solid white;
   }
-  .data-set .data-point {
-    opacity: 0.3;
+  .day-data .data-point {
+    opacity: 0.15;
   }
-  .data-set:hover .data-point,
-  .data-set:active .data-point {
-    opacity: 1;
+  .hidden-season {
+    opacity: 0;
   }
+
   .data-point.active-season {
     opacity: 1;
+  }
+  .active-season.day-data:hover .data-point,
+  .day-data.active .data-point {
+    opacity: 1;
+    box-shadow: 3px 0 3px rgba(0, 0, 0, 0.6);
   }
 </style>

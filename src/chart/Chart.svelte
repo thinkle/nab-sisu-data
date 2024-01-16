@@ -7,6 +7,7 @@
   export let activeYear = 2023;
 
   export let data: GraphData[];
+  export let hiddenYears: number[] = [];
   // Find the minimum and maximum dayOfSeason in the data
   let minDayOfSeason = Math.min(...data.map((d) => d.dayOfSeason));
   let maxDayOfSeason = Math.max(...data.map((d) => d.dayOfSeason));
@@ -23,7 +24,7 @@
 <div class="graph">
   <XAxis {xScale} minX={minDayOfSeason} maxX={maxDayOfSeason} />
   <YAxis {yScale} {minY} {maxY} />
-  <Series {data} {xScale} {yScale} {activeYear} />
+  <Series {data} {xScale} {yScale} {activeYear} {hiddenYears} />
 </div>
 
 <style>

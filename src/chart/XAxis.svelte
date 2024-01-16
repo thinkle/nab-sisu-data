@@ -13,7 +13,12 @@
     let markers = [];
     let currentDate = new Date(2020, 6, 1 + minX);
     let endDate = new Date(2020, 6, 1 + maxX);
-
+    if (endDate.getDate() > 15) {
+      endDate.setMonth(endDate.getMonth() + 1);
+      endDate.setDate(1);
+    } else {
+      endDate.setDate(15);
+    }
     while (currentDate <= endDate) {
       markers.push({
         dayOfSeason: calculateDayOfSeason(currentDate),
