@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Page, Bar, Container, SplitPane } from "contain-css-svelte";
+  import { Page, Bar, Sidebar } from "contain-css-svelte";
 
   import { LayerCake, Html } from "layercake";
   import "contain-css-svelte/vars/defaults.css";
@@ -77,58 +77,57 @@
     <h1 style="text-align: center">Nabnasset Sisu Dippers</h1>
     <div style="width:200px"></div>
   </Bar>
-  <Container height="100%" --container-max-width="1600px">
-    <SplitPane leftWidth="190px" height="100%">
-      <div slot="left">
-        <Bar>
-          <h2>Years</h2>
-          <div class="buttons">
-            <button on:click={hideAll}>🚫</button>
-            <button on:click={showAll}>👁️</button>
-          </div>
-        </Bar>
 
-        <ul>
-          {#each seasons as season, i}
-            <li
-              class="season{i}"
-              class:active={season === activeSeason}
-              class:hidden={hiddenSeasons.includes(season)}
-            >
-              <a on:click={() => (activeSeason = season)} href="#"
-                >{getYearLabel(season)}
-                <div class="legend">
-                  <div class="air square key">Air</div>
-                  <div class="water square key">Water</div>
-                </div>
-              </a>
-              <button on:click={toggleHidden(season)}>
-                {#if hiddenSeasons.includes(season)}
-                  👁️
-                {:else}
-                  🚫
-                {/if}
-              </button>
-            </li>
-          {/each}
-        </ul>
-      </div>
-      <div class="full-height" slot="right">
-        <Bar>
-          <h2>Dip Data</h2>
-        </Bar>
-        <div class="chart-container">
-          {#key graphData}
-            <Chart
-              data={graphData}
-              activeYear={activeSeason}
-              hiddenYears={hiddenSeasons}
-            ></Chart>
-          {/key}
+  <div slot="sidebar">
+    <Sidebar>
+      <Bar>
+        <h2>Years</h2>
+        <div class="buttons">
+          <button on:click={hideAll}>🚫</button>
+          <button on:click={showAll}>👁️</button>
         </div>
-      </div>
-    </SplitPane>
-  </Container>
+      </Bar>
+
+      <ul>
+        {#each seasons as season, i}
+          <li
+            class="season{i}"
+            class:active={season === activeSeason}
+            class:hidden={hiddenSeasons.includes(season)}
+          >
+            <a on:click={() => (activeSeason = season)} href="#"
+              >{getYearLabel(season)}
+              <div class="legend">
+                <div class="air square key">Air</div>
+                <div class="water square key">Water</div>
+              </div>
+            </a>
+            <button on:click={toggleHidden(season)}>
+              {#if hiddenSeasons.includes(season)}
+                👁️
+              {:else}
+                🚫
+              {/if}
+            </button>
+          </li>
+        {/each}
+      </ul>
+    </Sidebar>
+  </div>
+  <div class="full-height">
+    <Bar>
+      <h2>Dip Data</h2>
+    </Bar>
+    <div class="chart-container">
+      {#key graphData}
+        <Chart
+          data={graphData}
+          activeYear={activeSeason}
+          hiddenYears={hiddenSeasons}
+        ></Chart>
+      {/key}
+    </div>
+  </div>
 </Page>
 
 <style>

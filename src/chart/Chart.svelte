@@ -36,4 +36,9 @@
     color: var(--chart-fg);
     position: relative;
   }
+  @media (max-width: 900px) {
+    .graph {
+      font-size: 12px;
+    }
+  }
 </style>

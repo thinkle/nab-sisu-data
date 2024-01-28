@@ -123,7 +123,7 @@
     position: absolute;
     top: var(--y);
     left: var(--x);
-    width: calc(max(0.5vw, 10px));
+    width: calc(max(0.5vw, 3px));
     height: calc(100% - var(--y));
     box-sizing: border-box;
   }
