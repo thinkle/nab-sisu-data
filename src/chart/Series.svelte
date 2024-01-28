@@ -32,7 +32,15 @@
     class:active={activeItems.includes(datum)}
   >
     <div class="label date" style:--x="{xScale(datum.dayOfSeason)}%">
-      {datum.absoluteDate.toLocaleDateString()}
+      {datum.absoluteDate.toLocaleDateString("en-US", {
+        weekday: "long", // full name of the day of the week
+        month: "numeric", // numeric month
+        day: "numeric", // numeric day of the month
+        year: "2-digit", // two-digit year
+      })}
+      <div class="label">
+        Water: {datum.lakeTempF}
+      </div>
     </div>
     <div
       class="water-temp temp data-point season{seasons.indexOf(datum.season)}"

@@ -24,6 +24,24 @@
       activeItems = [...activeItems, datum];
     }
   }
+
+  function getLabelStyleForX(x) {
+    let textAlign = "center";
+    let transform = "translateX(-50%)";
+    if (x > 90) {
+      textAlign = "right";
+      transform = "translateX(-100%)";
+    } else if (x < 10) {
+      textAlign = "left";
+      transform = "none";
+    }
+    return `
+    text-align: ${textAlign};
+    transform: ${transform};
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.6);
+    --x: ${x}%; 
+    z-index: 3`;
+  }
 </script>
 
 {#each data as datum}
@@ -39,10 +57,30 @@
     class:active={activeItems.includes(datum)}
     class:water-above-air={datum.lakeTempF > datum.airTempF}
   >
-    <div class="label date" style:--x="{xScale(datum.dayOfSeason)}%">
-      {datum.absoluteDate.toLocaleDateString()}
-      <br />{datum.notes}
-      <br /><input type="checkbox" checked={datum.ice} /> Ice
+    <div
+      class="label date"
+      style={getLabelStyleForX(xScale(datum.dayOfSeason))}
+    >
+      {datum.absoluteDate.toLocaleDateString("en-US", {
+        weekday: "long", // full name of the day of the week
+        month: "numeric", // numeric month
+        day: "numeric", // numeric day of the month
+        year: "2-digit", // two-digit year
+      })}
+      <div class="temp">
+        {#if datum.airTempF || datum.airTempF === 0}{datum.airTempF}°F Air{/if}
+        {#if datum.lakeTempF || datum.lakeTempF === 0}{datum.lakeTempF}°F Water{/if}
+      </div>
+
+      {#if datum.notes}<div class="notes">{datum.notes}</div>{/if}
+      {#if datum.minutesInWater}<div>
+          {datum.minutesInWater} minutes in
+        </div>{/if}
+      {#if datum.ice === true || datum.ice === false}
+        <div class="ice">
+          <br /><input type="checkbox" checked={datum.ice} /> Ice
+        </div>
+      {/if}
     </div>
     <div
       class="air-temp temp data-point season{seasons.indexOf(datum.season)}"
@@ -51,7 +89,7 @@
       style:--y="{yScale(datum.airTempF)}%"
     >
       <div class="label">
-        Air: {datum.airTempF}
+        {datum.airTempF}°F
       </div>
     </div>
     <div
@@ -62,7 +100,7 @@
       style:--y="{yScale(datum.lakeTempF)}%"
     >
       <div class="label">
-        Water: {datum.lakeTempF}
+        {datum.lakeTempF}°F
       </div>
     </div>
   </div>
@@ -71,8 +109,7 @@
 <style>
   .label {
     white-space: nowrap;
-    text-align: right;
-    width: 6em;
+    text-align: center;
   }
   .date.label {
     top: 10px;
@@ -133,10 +170,9 @@
   .season9 {
     filter: var(--season-9-filter);
   }
-
-  .active .data-point {
+  .label {
+    position: relative;
   }
-
   .water-above-air .air-temp {
     z-index: 1;
   }
@@ -156,7 +192,7 @@
     border-right: 1px solid white;
   }
   .day-data .data-point {
-    opacity: 0.15;
+    opacity: 0.4;
   }
   .hidden-season {
     opacity: 0;
@@ -169,5 +205,18 @@
   .day-data.active .data-point {
     opacity: 1;
     box-shadow: 3px 0 3px rgba(0, 0, 0, 0.6);
+  }
+
+  .air-temp .label,
+  .water-temp .label {
+    transform: translate(-50%, -50%);
+
+    text-align: center;
+    color: black;
+    -webkit-text-fill-color: white;
+    -webkit-text-stroke-color: black;
+    font-weight: bold;
+    -webkit-text-stroke-width: 1px;
+    z-index: 99;
   }
 </style>

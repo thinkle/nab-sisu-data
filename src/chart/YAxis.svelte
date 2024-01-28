@@ -10,7 +10,7 @@
 
     // Special marker for 32°F
     if (minY <= 32 && maxY >= 32) {
-      markers.push({ value: 32, label: "32°F" });
+      markers.push({ value: 32, label: "32°F", type: "freezing" });
     }
 
     // Markers for every 10°F within range
@@ -29,7 +29,10 @@
 
 <div class="y-axis">
   {#each yMarkers as marker}
-    <div class="y-axis-line" style="top: {yScale(marker.value)}%;">
+    <div
+      class="y-axis-line {marker.type || ''}"
+      style="top: {yScale(marker.value)}%;"
+    >
       <!-- Line element -->
     </div>
     <div class="y-axis-label" style="top: {yScale(marker.value)}%;">
@@ -54,5 +57,10 @@
     width: 100%;
     height: 1px;
     background-color: #ccc;
+  }
+
+  .y-axis-line.freezing {
+    background-color: rgb(9, 255, 251);
+    height: 3px;
   }
 </style>

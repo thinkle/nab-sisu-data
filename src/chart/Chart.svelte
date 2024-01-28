@@ -16,8 +16,8 @@
     .domain([minDayOfSeason, maxDayOfSeason])
     .range([0, 100]); // This will be dynamically updated based on container size
 
-  let minY = Math.min(...data.map((d) => d.airTempF));
-  let maxY = Math.max(...data.map((d) => d.airTempF));
+  let minY = Math.min(...data.map((d) => d.airTempF)) - 5;
+  let maxY = Math.max(...data.map((d) => d.airTempF)) + 10;
   let yScale = scaleLinear().domain([minY, maxY]).range([100, 0]); // This will be dynamically updated based on container size
 </script>
 
@@ -31,6 +31,7 @@
   .graph {
     width: 100%;
     height: 100%;
+    min-height: 70vh;
     background-color: var(--chart-bg);
     color: var(--chart-fg);
     position: relative;

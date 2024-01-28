@@ -8,8 +8,20 @@
   import { fakeData } from "./fakeData";
   import { getGraphData } from "./dataMassager";
   import Chart from "./chart/Chart.svelte";
-  let graphData = getGraphData(fakeData);
-  let data = graphData.map((v) => ({ x: v.dayOfSeason, y: v.airTempF }));
+  import { onMount } from "svelte";
+  import { getData, postData } from "./data";
+  let dipData = [];
+
+  onMount(async () => {
+    dipData = await getData();
+  });
+  let graphData = [];
+  let data = [];
+  $: {
+    graphData = getGraphData(dipData);
+    data = graphData.map((v) => ({ x: v.dayOfSeason, y: v.airTempF }));
+    console.log("Updated data: ", dipData, "=>", graphData, data);
+  }
   console.log("Got me data", graphData, data);
   let seasons = [];
   $: {
@@ -49,23 +61,31 @@
   function hideAll() {
     hiddenSeasons = seasons;
   }
+  function showAll() {
+    hiddenSeasons = [];
+  }
 </script>
 
 <Page --bar-height="32px">
   <Bar slot="header">
     <!-- Left -->
-    <div></div>
+
     <!-- Center -->
-    <h1>Nabnasset Sisu Dippers</h1>
-    <!-- Right -->
-    <div></div>
+    <div style="width: 200px">
+      <img src="./sisu.png" alt="Sisu" />
+    </div>
+    <h1 style="text-align: center">Nabnasset Sisu Dippers</h1>
+    <div style="width:200px"></div>
   </Bar>
   <Container height="100%" --container-max-width="1600px">
-    <SplitPane leftWidth="120px" height="100%">
+    <SplitPane leftWidth="190px" height="100%">
       <div slot="left">
         <Bar>
           <h2>Years</h2>
-          <button on:click={hideAll}>Hide All</button>
+          <div class="buttons">
+            <button on:click={hideAll}>🚫</button>
+            <button on:click={showAll}>👁️</button>
+          </div>
         </Bar>
 
         <ul>
@@ -77,8 +97,10 @@
             >
               <a on:click={() => (activeSeason = season)} href="#"
                 >{getYearLabel(season)}
-                <div class="water square key">W</div>
-                <div class="air square key">A</div>
+                <div class="legend">
+                  <div class="air square key">Air</div>
+                  <div class="water square key">Water</div>
+                </div>
               </a>
               <button on:click={toggleHidden(season)}>
                 {#if hiddenSeasons.includes(season)}
@@ -96,11 +118,13 @@
           <h2>Dip Data</h2>
         </Bar>
         <div class="chart-container">
-          <Chart
-            data={graphData}
-            activeYear={activeSeason}
-            hiddenYears={hiddenSeasons}
-          ></Chart>
+          {#key graphData}
+            <Chart
+              data={graphData}
+              activeYear={activeSeason}
+              hiddenYears={hiddenSeasons}
+            ></Chart>
+          {/key}
         </div>
       </div>
     </SplitPane>
@@ -135,6 +159,11 @@
     align-items: center;
     gap: 3px;
   }
+  li a {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+  }
 
   :root {
     --season-1-filter: brightness(1.6) hue-rotate(-30deg);
@@ -149,6 +178,11 @@
     --season-9-filter: saturate(1.5) brightness(1.3) hue-rotate(120deg);
     --air-color: rgb(195, 220, 255);
     --water-color: rgb(59, 200, 255);
+  }
+  li {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
   }
   .season1 .square {
     filter: var(--season-1-filter);
@@ -178,13 +212,17 @@
     filter: var(--season-9-filter);
   }
 
+  .legend {
+    display: inline-flex;
+    flex-direction: column;
+  }
   .square {
-    width: 1em;
+    width: 5em;
     height: 1em;
     font-size: 0.7em;
     display: inline-grid;
     place-content: center;
-    border: 3px solid var(--chart-bg);
+
     vertical-align: middle;
   }
   .square.water {
@@ -201,5 +239,14 @@
   }
   li.active {
     font-weight: bold;
+  }
+  .buttons {
+    padding: 0;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  img {
+    max-height: var(--bar-height);
   }
 </style>

@@ -5,6 +5,7 @@ type PlungeData = {
   airTempF: number;
   lakeTempF: number;
   notes: string;
+  minutesInWater: number;
   ice: boolean;
 };
 
@@ -16,11 +17,15 @@ export type GraphData = {
   ice: boolean;
   airTempF: number;
   lakeTempF: number;
+  minutesInWater: number;
 };
 
 export function getGraphData(data: PlungeData[]): GraphData[] {
   return data.map((plunge) => {
-    const plungeDate = new Date(plunge.date);
+    // Bit of a hack: we just move the time to 12:00 so that any GMT screw-ups
+    // won't change the date, since 12:00 GMT is still the same day in EST or EDT
+    // or what have you.
+    const plungeDate = new Date(plunge.date.replace("00", "12"));
     const seasonStartYear =
       plungeDate.getMonth() >= 6
         ? plungeDate.getFullYear()
@@ -35,6 +40,7 @@ export function getGraphData(data: PlungeData[]): GraphData[] {
       ice: plunge.ice,
       airTempF: plunge.airTempF,
       lakeTempF: plunge.lakeTempF,
+      minutesInWater: plunge.minutesInWater,
     };
   });
 }
